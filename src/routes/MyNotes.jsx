@@ -1,7 +1,7 @@
 export default function MyNote() {
     return (
-        <>
-        <h2>My notes </h2>
-        </>
-    )
+        <div className="App" class="container">
+            <h1 class="text-center">My notes</h1>
+        </div>
+    );
 }
