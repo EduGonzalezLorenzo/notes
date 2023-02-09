@@ -2,13 +2,14 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './routes/App';
+import Main from './routes/Main';
 import Root from './routes/Root';
 import ErrorPage from './routes/ErrorPage';
 import CreateNote from './routes/CreateNote';
 import MyNotes from './routes/MyNotes';
 import Login from './routes/Login';
 import SignUp from './routes/SignUp';
+import CreateVoiceNote from './routes/CreateVoiceNote';
 import reportWebVitals from './reportWebVitals';
 
 const router = createBrowserRouter([
@@ -19,11 +20,15 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <App />
+        element: <Main />
       },
       {
         path: "/createNote",
         element: <CreateNote />
+      },
+      {
+        path: "/createVoiceNote",
+        element: <CreateVoiceNote />
       },
       {
         path: "/myNotes",
