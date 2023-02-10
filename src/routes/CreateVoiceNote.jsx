@@ -21,6 +21,8 @@ export default function NewVoiceNote() {
                     chunks.push(e.data);
                 };
                 record.onclick = () => {
+                    let lastAudio = document.getElementsByClassName("clip");
+                    if (lastAudio.length !== 0) lastAudio[0].remove();
                     mediaRecorder.start();
                     console.log(mediaRecorder.state);
                     console.log("record click");
@@ -44,7 +46,6 @@ export default function NewVoiceNote() {
                     console.log("recorder stopped");
 
                     const clipContainer = document.createElement("article");
-                    const clipLabel = document.createElement("p");
                     const audio = document.createElement("audio");
                     const deleteButton = document.createElement("button");
 
@@ -53,7 +54,6 @@ export default function NewVoiceNote() {
                     deleteButton.innerHTML = "Delete";
 
                     clipContainer.appendChild(audio);
-                    clipContainer.appendChild(clipLabel);
                     clipContainer.appendChild(deleteButton);
                     soundClips.appendChild(clipContainer);
 
