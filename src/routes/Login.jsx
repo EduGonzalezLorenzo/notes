@@ -6,7 +6,7 @@ export default function Login() {
         <div className="App container">
             <h1 className="text-center">Login</h1>
             <div className="texnote_content">
-                <form action="" method="post">
+                <form action="http://localhost:8081/login" method="post">
                     <div className="row mb-3">
                         <label htmlFor="username" className="col-sm-2 col-form-label"> User name:</label>
                         <div className="col-sm-10">
