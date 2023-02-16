@@ -35,10 +35,10 @@ export default function NewNote() {
     );
 }
 
-fetch("http://localhost:8081/notes", {
-    method: "POST",
-    headers: {
-        "Authorization": "Bearer " + localStorage.getItem("token"),
-        "Content-Type": "application/json"
-    }
-})
+// fetch("http://localhost:8081/notes", {
+//     method: "POST",
+//     headers: {
+//         "Authorization": "Bearer " + localStorage.getItem("token"),
+//         "Content-Type": "application/json"
+//     }
+// })
