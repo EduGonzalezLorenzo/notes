@@ -1,25 +1,25 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export default function MyNote() {
-    const [notes, setNotes] = useState([]);
+    const [note, setNote] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    let navigate = useNavigate();
+
 
     useEffect(() => {
         setIsLoading(true);
-        setNotes([]);
+        setNote();
 
         const loadNotes = async () => {
-            const allNotes = await getNotes();
-            setNotes(allNotes);
+            const currentNote = await getNote();
+            setNote(currentNote);
             setIsLoading(false);
         };
         loadNotes();
     }, [])
 
-    async function getNotes() {
-        return fetch("http://localhost:8081/notes", {
+    async function getNote() {
+        const noteUrl = "http://localhost:8081/note";
+        return fetch(noteUrl, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -37,28 +37,23 @@ export default function MyNote() {
     function formatNote(note) {
         const id = note.id;
         const title = note.title;
+        const body = note.body;
         return (
-            <li className="list-group-item">
-                id:{id}, title: {title}, <button onClick={navigate("/note/" + id)}>Open note</button>
+            <li>
+                id:{id}, title: {title}, body: {body}
             </li>
         );
     }
 
-    function noteList() {
-        return (
-            <>
-                {isLoading && <p>Loading...</p>}
-                <ul id="notes" className="list-group list-group-flush">
-                    {notes.map(formatNote)}
-                </ul>
-            </>
-        )
-    }
+
 
     return (
         <div className="App container">
-            <h1 className="text-center">My notes</h1>
-            {localStorage.getItem("token") == null ? "You have to be loged to see your notes" : noteList}
+            <h1 className="text-center">Note</h1>
+            {isLoading && <p>Loading...</p>}
+            <ul id="notes">
+                {formatNote}
+            </ul>
         </div>
     );
 }

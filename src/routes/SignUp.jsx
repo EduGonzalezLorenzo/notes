@@ -7,10 +7,10 @@ export default function SignUp() {
     const [passwordRepeat, setPasswordRepeat] = useState("");
     const [result, setResult] = useState("");
 
-    const alterUsername = (event) => { setUsername(event.target.value); }
-    const alterPassword = (event) => { setPassword(event.target.value); }
-    const alterPasswordRepeat = (event) => { setPasswordRepeat(event.target.value); }
-    const togglePasswordView = () => { setShowPassword(!showPassword) }
+    const alterUsername = (event) => { setUsername(event.target.value); };
+    const alterPassword = (event) => { setPassword(event.target.value); };
+    const alterPasswordRepeat = (event) => { setPasswordRepeat(event.target.value); };
+    const togglePasswordView = () => { setShowPassword(!showPassword) };
 
     const sendSignUp = async (event) => {
         event.preventDefault();

@@ -1,9 +1,15 @@
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function NewVoiceNote() {
     const [isRecording, setIsRecording] = useState(false);
-    const [blob, setBlob] = useState(null);
     const mediaRecorderRef = useRef(null);
+
+    const [title, setTitle] = useState("");
+    const [blob, setBlob] = useState(null);
+    const [isPublic, setIsPublic] = useState(false);
+    let navigate = useNavigate();
+
 
     const startRecording = () => {
         navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
@@ -28,10 +34,17 @@ export default function NewVoiceNote() {
         setIsRecording(false);
     };
 
-    return (
-        <div className="App container">
-            <h1 className="text-center">New Voice Note</h1>
-            <form action="" method="put">
+    const sendCreateNote = async (event) => {
+        event.preventDefault();
+        const formImage = new FormData();
+        if (blob) {
+            formImage.append("file", blob);
+        }
+    }
+
+    function createNoteForm() {
+        return (
+            <form onSubmit={sendCreateNote}>
                 <div className="row mb-3">
                     <label htmlFor="title" className="col-sm-2 col-form-label">Title</label>
                     <div className="col-sm-10">
@@ -40,7 +53,7 @@ export default function NewVoiceNote() {
                 </div>
                 <div className="mb-3 text-center">
                     {blob ? <audio controls src={URL.createObjectURL(blob)} /> : null}
-                    <input type="hidden" value={blob}/>
+                    <input type="hidden" value={blob} />
                 </div>
                 <div className="main-controls text-center mb-3">
                     <div className="text-center" id="buttons">
@@ -53,7 +66,15 @@ export default function NewVoiceNote() {
                     <input type="submit" className="btn btn-primary" value="Save Note" disabled={!blob} />
                 </div>
             </form>
+        )
+    }
 
+    return (
+        <div className="App container">
+            <h1 className="text-center">New Voice Note</h1>
+            <div className="texnote_content">
+                {localStorage.getItem("token") == null ? "You have to be loged to create a note" : createNoteForm}
+            </div>
         </div>
     );
 }
