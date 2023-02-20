@@ -5,7 +5,6 @@ export default function SignUp() {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [passwordRepeat, setPasswordRepeat] = useState("");
-    const [result, setResult] = useState("");
 
     const alterUsername = (event) => { setUsername(event.target.value); };
     const alterPassword = (event) => { setPassword(event.target.value); };
@@ -15,7 +14,7 @@ export default function SignUp() {
     const sendSignUp = async (event) => {
         event.preventDefault();
         const data = { username: username, password: password };
-        setResult(post(data));
+        window.alert(String(await post(data)));
     }
 
     async function post(data) {
@@ -39,7 +38,6 @@ export default function SignUp() {
     return (
         <div className="App container">
             <h1 className="text-center">Register</h1>
-            <div>{result}</div>
             <div className="texnote_content">
                 <form onSubmit={sendSignUp}>
                     <div className="row mb-3">

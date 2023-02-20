@@ -5,7 +5,6 @@ export default function SignUp() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-    const [result, setResult]= useState("");
     let navigate = useNavigate();
 
     const alterUsername = (event) => { setUsername(event.target.value); }
@@ -32,14 +31,13 @@ export default function SignUp() {
                 return navigate("/myNotes");
             })
             .catch(() => {
-                setResult("Wrong username or password");
+                window.alert("Wrong username or password");
             })
     }
 
     return (
         <div className="App container">
             <h1 className="text-center">Login</h1>
-            <div>{result}</div>
             <div className="texnote_content">
                 <form onSubmit={sendLogin}>
                     <div className="row mb-3">

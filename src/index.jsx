@@ -10,6 +10,7 @@ import MyNotes from './routes/MyNotes';
 import Login from './routes/Login';
 import SignUp from './routes/SignUp';
 import CreateVoiceNote from './routes/CreateVoiceNote';
+import Note from './routes/Note';
 import reportWebVitals from './reportWebVitals';
 
 const router = createBrowserRouter([
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
       {
         path: "/signUp",
         element: <SignUp />
+      },
+      {
+        path: "/note/:id",
+        element: <Note />
       }
     ]
   }

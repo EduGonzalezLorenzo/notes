@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 export default function MyNote() {
     const [note, setNote] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-
+    const [error, setError] = useState("");
+    const { id } = useParams();
 
     useEffect(() => {
         setIsLoading(true);
-        setNote();
-
-        const loadNotes = async () => {
-            const currentNote = await getNote();
-            setNote(currentNote);
+        setNote([]);
+        const loadNote = async () => {
+            setNote(await getNote(id));
             setIsLoading(false);
         };
-        loadNotes();
-    }, [])
+        loadNote();
+    }, [id]);
 
-    async function getNote() {
-        const noteUrl = "http://localhost:8081/note";
+    async function getNote(id) {
+        const noteUrl = "http://localhost:8081/notes/" + id;
         return fetch(noteUrl, {
             method: "GET",
             headers: {
@@ -26,34 +26,27 @@ export default function MyNote() {
                 "Authorization": "Bearer " + localStorage.getItem("token")
             }
         })
-            .then((response) => response.json())
-            .then((allnotes) => {
-                return allnotes;
+            .then((response) => {
+                if (response.ok) return response.json();
+                else if (response.status === 401) setError("This note is private and you are not his owner");
+                else setError("This note dont exists");
+                return null;
             })
             .catch(() => {
+                console.log("error capturado");
             })
     }
-
-    function formatNote(note) {
-        const id = note.id;
-        const title = note.title;
-        const body = note.body;
-        return (
-            <li>
-                id:{id}, title: {title}, body: {body}
-            </li>
-        );
-    }
-
-
 
     return (
         <div className="App container">
             <h1 className="text-center">Note</h1>
             {isLoading && <p>Loading...</p>}
-            <ul id="notes">
-                {formatNote}
-            </ul>
+            {note === null ? <div>{error}</div> :
+                <div>
+                    <h2>{note.title}</h2>
+                    {note.body === "" ? "audio" : <div className="text-justify"> {note.body} </div>}
+                </div>
+            }
         </div>
     );
 }
