@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 
 export default function MyNote() {
     const [note, setNote] = useState([]);
+    const [img, setImg] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const { id } = useParams();
@@ -11,13 +12,52 @@ export default function MyNote() {
         setIsLoading(true);
         setNote([]);
         const loadNote = async () => {
-            console.log(await getNote(id));
-            setNote(await getNote(id));
+            await getNote(id)
+                .then((noteInfo) => {
+                    setNote(noteInfo);
+                    let preUri = getFilePreUri(noteInfo.id);
+                    getFileUri(preUri);
+                });
             setIsLoading(false);
         };
         loadNote();
     }, [id]);
 
+    async function getFileUri(preUri) {
+        const url = "http://localhost:8081" + preUri;
+        return fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+            .then((response) => {
+                return response.blob();
+            })
+            .then((data) => {
+                console.log(data);
+                setImg(URL.createObjectURL(data));
+            })
+    }
+
+    async function getFilePreUri(id) {
+        const url = "http://localhost:8081/notes/" + id + "/files";
+        return fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((filesArray) => {
+                console.log(filesArray);
+                return filesArray[0].uri;
+            })
+    }
     async function getNote(id) {
         const noteUrl = "http://localhost:8081/notes/" + id;
         return fetch(noteUrl, {
@@ -43,10 +83,15 @@ export default function MyNote() {
         <div className="App container">
             <h1 className="text-center">Note</h1>
             {isLoading && <p>Loading...</p>}
-            {note === null ? <div>{error}</div> :
+            {note === null ? 
+            <div>{error}</div>
+            :
                 <div>
                     <h2>{note.title}</h2>
                     {note.body === "" ? "audio" : <div className="text-justify"> {note.body} </div>}
+                    <div>
+                        <img src={img} alt="fileImage" />
+                    </div>
                 </div>
             }
         </div>
