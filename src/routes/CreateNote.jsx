@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import UploadFile from '../utils/FileUploadForm';
 
-export default function NewNote(noteId) {
+export default function NewNote() {
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
     const [isPublic, setIsPublic] = useState(false);
-    let navigate = useNavigate();
+    const [noteId, setNoteId] = useState("");
 
     const alterTitle = (event) => { setTitle(event.target.value) };
     const alterBody = (event) => { setBody(event.target.value) };
@@ -27,7 +27,7 @@ export default function NewNote(noteId) {
             body: JSON.stringify(note),
         })
             .then((response) => {
-                return navigate("/myNotes");
+                setNoteId(response.id);
             })
             .catch(() => {
                 return "Error creating note";
@@ -53,13 +53,13 @@ export default function NewNote(noteId) {
                                 <textarea id="notebody" className="form-control" rows="3" placeholder="Text" onChange={alterBody} value={body} />
                             </div>
                         </div>
-
+{/* 
                         <div className="row mb-3">
                             <label htmlFor="noteimg" className="col-sm-2 col-form-label">Add Image</label>
                             <div className="col-sm-10">
                                 <input id="noteimg" type="file" accept="image/*" className="form-control-input" onChange={"funcion de subir texto que hay que importar"} />
                             </div>
-                        </div>
+                        </div> */}
                         <div className="row mb-3">
                             <label className="col-10" htmlFor="public">Click checkbox to swap between public and private note</label>
                             <div className="col-2">
@@ -70,6 +70,7 @@ export default function NewNote(noteId) {
                             <input type="submit" className="btn btn-primary" value="Save Note" />
                         </div>
                     </form>}
+                {noteId && <UploadFile noteId={noteId}/>}
             </div>
         </div>
     );

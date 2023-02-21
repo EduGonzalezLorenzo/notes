@@ -1,9 +1,16 @@
 import { Link, Outlet } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Root() {
-    const [savedToken, setToken] = useState(null)
     const [isLogged, setLogged] = useState(false);
+    const [savedToken, setToken] = useState(null);
+
+    useEffect(() => {
+        window.addEventListener('storage', () => {
+            const token = localStorage.getItem('token');
+            setLogged(token != null);
+        })
+    }, [])
 
     const token = localStorage.getItem("token");
     if (savedToken !== token) {
@@ -14,7 +21,6 @@ export default function Root() {
     const Logout = () => {
         localStorage.removeItem("token");
         setLogged(false);
-        setToken(null);
     }
 
     return (
@@ -31,6 +37,9 @@ export default function Root() {
                         </li>
                         <li className="nav-item nav-hover" hidden={!isLogged}>
                             <Link to="/myNotes" className="nav-link">My notes</Link>
+                        </li>
+                        <li className="nav-item nav-hover" hidden={!isLogged}>
+                            <Link to="/settigns" className="nav-link">Settings</Link>
                         </li>
                         <li className="nav-item nav-hover" hidden={!isLogged}>
                             <Link to="/" onClick={Logout} className="nav-link">Logout</Link>

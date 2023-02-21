@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function SignUp() {
+export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -10,7 +10,7 @@ export default function SignUp() {
     const alterUsername = (event) => { setUsername(event.target.value); }
     const alterPassword = (event) => { setPassword(event.target.value); }
     const togglePasswordView = () => { setShowPassword(!showPassword) }
-    
+
     const sendLogin = async (event) => {
         event.preventDefault();
         const data = { username: username, password: password };
@@ -28,7 +28,8 @@ export default function SignUp() {
             .then((response) => response.json())
             .then((json) => {
                 localStorage.setItem("token", json.token);
-                return navigate("/myNotes");
+                window.dispatchEvent(new Event('storage'))
+                return navigate("/");
             })
             .catch(() => {
                 window.alert("Wrong username or password");

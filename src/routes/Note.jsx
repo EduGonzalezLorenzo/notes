@@ -11,6 +11,7 @@ export default function MyNote() {
         setIsLoading(true);
         setNote([]);
         const loadNote = async () => {
+            console.log(await getNote(id));
             setNote(await getNote(id));
             setIsLoading(false);
         };
@@ -33,7 +34,8 @@ export default function MyNote() {
                 return null;
             })
             .catch(() => {
-                console.log("error capturado");
+                setError("Database Error");
+                return null;
             })
     }
 

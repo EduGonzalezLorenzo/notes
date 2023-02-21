@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import Main from './routes/Main';
-import Root from './routes/Root';
+import Navigation from './routes/Navigation';
 import ErrorPage from './routes/ErrorPage';
 import CreateNote from './routes/CreateNote';
 import MyNotes from './routes/MyNotes';
@@ -11,12 +11,14 @@ import Login from './routes/Login';
 import SignUp from './routes/SignUp';
 import CreateVoiceNote from './routes/CreateVoiceNote';
 import Note from './routes/Note';
+import Settigns from './routes/updateUser';
 import reportWebVitals from './reportWebVitals';
+import Update from './routes/UpdateNote'
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root />, //parte fija de la página, por ejemplo el navegador.
+    element: <Navigation />,
     errorElement: <ErrorPage />,
     children: [
       {
@@ -37,7 +39,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/login",
-        element: <Login />
+        element: <Login/>
       },
       {
         path: "/signUp",
@@ -46,13 +48,23 @@ const router = createBrowserRouter([
       {
         path: "/note/:id",
         element: <Note />
+      },
+      {
+        path: "/update/:id",
+        element: <Update />
+      },
+      {
+        path: "/settigns",
+        element: <Settigns />
       }
     ]
   }
 ]);
 
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+  
   <React.StrictMode>
     <RouterProvider router={router}></RouterProvider>
   </React.StrictMode>
