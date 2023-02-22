@@ -27,6 +27,7 @@ export default function FileUploadForm({ noteId }) {
 
   return (
     <form onSubmit={handleSubmit}>
+      <p>The note has been created. If you want to add a image to this note upload it from here.</p>
       <label htmlFor="fileInput">File:</label>
       <input
         id="fileInput"

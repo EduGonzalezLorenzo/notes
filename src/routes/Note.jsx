@@ -15,7 +15,8 @@ export default function MyNote() {
             await getNote(id)
                 .then((noteInfo) => {
                     setNote(noteInfo);
-                    let preUri = getFilePreUri(noteInfo.id);
+                    return getFilePreUri(noteInfo.id);
+                }).then((preUri) => {
                     getFileUri(preUri);
                 });
             setIsLoading(false);
@@ -36,7 +37,6 @@ export default function MyNote() {
                 return response.blob();
             })
             .then((data) => {
-                console.log(data);
                 setImg(URL.createObjectURL(data));
             })
     }
@@ -54,7 +54,6 @@ export default function MyNote() {
                 return response.json();
             })
             .then((filesArray) => {
-                console.log(filesArray);
                 return filesArray[0].uri;
             })
     }
@@ -83,14 +82,14 @@ export default function MyNote() {
         <div className="App container">
             <h1 className="text-center">Note</h1>
             {isLoading && <p>Loading...</p>}
-            {note === null ? 
-            <div>{error}</div>
-            :
+            {note === null ?
+                <div>{error}</div>
+                :
                 <div>
                     <h2>{note.title}</h2>
                     {note.body === "" ? "audio" : <div className="text-justify"> {note.body} </div>}
                     <div>
-                        <img src={img} alt="fileImage" />
+                        {img == null ? "" : <img src={img} alt="fileImage" />}
                     </div>
                 </div>
             }

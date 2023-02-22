@@ -40,7 +40,7 @@ export default function NewNote() {
         <div className="App container">
             <h1 className="text-center">New Note</h1>
             <div className="texnote_content">
-                {localStorage.getItem("token") == null ? "You have to be loged to create a note" :
+                {localStorage.getItem("token") == null ? "You have to be logged to create a note" :
                     <form onSubmit={sendCreateNote}>
                         <div className="row mb-3">
                             <label htmlFor="title" className="col-sm-2 col-form-label">Title</label>
@@ -55,7 +55,7 @@ export default function NewNote() {
                                 <textarea id="notebody" className="form-control" rows="3" placeholder="Text" onChange={alterBody} value={body} />
                             </div>
                         </div>
-                        {noteId && <UploadFile noteId={noteId} />}
+
                         <div className="row mb-3">
                             <label className="col-10" htmlFor="public">Click checkbox to swap between public and private note</label>
                             <div className="col-2">
@@ -63,10 +63,10 @@ export default function NewNote() {
                             </div>
                         </div>
                         <div className="text-center">
-                            <input type="submit" className="btn btn-primary" value="Save Note" />
+                            <input type="submit" className="btn btn-primary" value={noteId ? "Add image" : "Create note"} />
                         </div>
                     </form>}
-
+                    {noteId && <UploadFile noteId={noteId} />}
             </div>
         </div>
     );
