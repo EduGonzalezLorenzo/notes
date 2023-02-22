@@ -2,16 +2,18 @@ import { useState } from "react";
 
 export default function SignUp() {
     const [password, setPassword] = useState("");
+    const [oldPassword, setOldPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [passwordRepeat, setPasswordRepeat] = useState("");
 
+    const alterOldPassword = (event) => { setOldPassword(event.target.value); };
     const alterPassword = (event) => { setPassword(event.target.value); };
     const alterPasswordRepeat = (event) => { setPasswordRepeat(event.target.value); };
     const togglePasswordView = () => { setShowPassword(!showPassword) };
 
     const sendSignUp = async (event) => {
         event.preventDefault();
-        const data = { password: password };
+        const data = { oldPassword: oldPassword, newPassword: password };
         window.alert(String(await post(data)));
     }
 
@@ -25,8 +27,7 @@ export default function SignUp() {
             body: JSON.stringify(data),
         })
             .then((response) => {
-                if (response.status === 409) return "User already exists";
-                if (response.ok) return "User " + data.username + " created";
+                if (response.ok) return "Password changed";
                 return "Input data error";
             })
             .catch(() => {
@@ -41,21 +42,28 @@ export default function SignUp() {
             <div className="texnote_content">
                 <form onSubmit={sendSignUp}>
                     <div className="row mb-3">
-                        <label htmlFor="password" className="col-sm-2 col-form-label">Password</label>
+                        <label htmlFor="password" className="col-sm-2 col-form-label">Old Ppassword</label>
+                        <div className="col-sm-10">
+                            <input type={showPassword ? "text" : "password"} name="oldPassword" className="form-control password" id="oldPassword" onChange={alterOldPassword} required />
+                        </div>
+                    </div>
+
+                    <div className="row mb-3">
+                        <label htmlFor="password" className="col-sm-2 col-form-label">New password</label>
                         <div className="col-sm-10">
                             <input type={showPassword ? "text" : "password"} name="password" className="form-control password" id="password" onChange={alterPassword} required />
                         </div>
                     </div>
 
                     <div className="row mb-3">
-                        <label htmlFor="passwordRepeat" className="col-sm-2 col-form-label">Repeat password</label>
+                        <label htmlFor="passwordRepeat" className="col-sm-2 col-form-label">Repeat new password</label>
                         <div className="col-sm-10">
                             <input type={showPassword ? "text" : "password"} className="form-control password" id="passwordRepeat" name="passwordRepeat" onChange={alterPasswordRepeat} required />
                             <input type="checkbox" onClick={togglePasswordView} />Show Password
                         </div>
                     </div>
                     <div className="text-center">
-                        <input id="signUp" className="btn btn-primary" type="submit" value="Create user" disabled={password !== passwordRepeat || password === ""} />
+                        <input id="signUp" className="btn btn-primary" type="submit" value="Change password" disabled={password !== passwordRepeat || password === ""} />
                     </div>
                 </form>
             </div>

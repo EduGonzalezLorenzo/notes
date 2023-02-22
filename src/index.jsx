@@ -11,7 +11,7 @@ import Login from './routes/Login';
 import SignUp from './routes/SignUp';
 import CreateVoiceNote from './routes/CreateVoiceNote';
 import Note from './routes/Note';
-import Settigns from './routes/updateUser';
+import Settigns from './routes/UpdateUser';
 import reportWebVitals from './reportWebVitals';
 import Update from './routes/UpdateNote'
 

@@ -38,10 +38,23 @@ export default function NewVoiceNote() {
     const sendCreateNote = async (event) => {
         event.preventDefault();
         const note = { title: title, body: "", isVoiceNote: true, isPublic: isPublic }
-        await post(note);
+        await postNote(note).then((json) => { postAudio(json.id) }).then(navigate("/myNotes/"));
     }
 
-    async function post(note) {
+    async function postAudio(id) {
+        const formData = new FormData();
+        formData.append("file", blob);
+        const response = await fetch("http://localhost:8081/notes/" + id + "/files", {
+            method: "POST",
+            body: formData,
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        return await response.json();
+    }
+
+    async function postNote(note) {
         return await fetch("http://localhost:8081/notes", {
             method: "POST",
             headers: {
@@ -51,7 +64,7 @@ export default function NewVoiceNote() {
             body: JSON.stringify(note),
         })
             .then((response) => {
-                return navigate("/myNotes");
+                return response.json();
             })
             .catch(() => {
                 return "Error creating note";

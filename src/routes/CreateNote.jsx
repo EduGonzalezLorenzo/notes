@@ -1,11 +1,13 @@
 import { useState } from "react";
 import UploadFile from '../utils/FileUploadForm';
+import { useNavigate } from "react-router-dom";
 
 export default function NewNote() {
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
     const [isPublic, setIsPublic] = useState(false);
     const [noteId, setNoteId] = useState("");
+    let navigate = useNavigate();
 
     const alterTitle = (event) => { setTitle(event.target.value) };
     const alterBody = (event) => { setBody(event.target.value) };
@@ -14,7 +16,7 @@ export default function NewNote() {
     const sendCreateNote = async (event) => {
         event.preventDefault();
         const note = { title: title, body: body, isVoiceNote: false, isPublic: isPublic }
-        await post(note);
+        await post(note).then(navigate("/myNotes/"));
     }
 
     async function post(note) {

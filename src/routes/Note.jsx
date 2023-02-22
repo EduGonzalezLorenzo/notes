@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 export default function MyNote() {
     const [note, setNote] = useState([]);
-    const [img, setImg] = useState([]);
+    const [img, setImg] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const { id } = useParams();
@@ -18,6 +18,7 @@ export default function MyNote() {
                     return getFilePreUri(noteInfo.id);
                 }).then((preUri) => {
                     getFileUri(preUri);
+                    console.log("preuri: " + preUri);
                 });
             setIsLoading(false);
         };
@@ -25,6 +26,7 @@ export default function MyNote() {
     }, [id]);
 
     async function getFileUri(preUri) {
+        if (preUri == null) return null;
         const url = "http://localhost:8081" + preUri;
         return fetch(url, {
             method: "GET",
@@ -37,6 +39,8 @@ export default function MyNote() {
                 return response.blob();
             })
             .then((data) => {
+                console.log("data: " + data)
+                console.log("url: " + URL.createObjectURL(data))
                 setImg(URL.createObjectURL(data));
             })
     }
@@ -54,9 +58,11 @@ export default function MyNote() {
                 return response.json();
             })
             .then((filesArray) => {
+                if (filesArray.length === 0) return null;
                 return filesArray[0].uri;
-            })
+            }).catch()
     }
+
     async function getNote(id) {
         const noteUrl = "http://localhost:8081/notes/" + id;
         return fetch(noteUrl, {
@@ -87,10 +93,16 @@ export default function MyNote() {
                 :
                 <div>
                     <h2>{note.title}</h2>
-                    {note.body === "" ? "audio" : <div className="text-justify"> {note.body} </div>}
-                    <div>
-                        {img == null ? "" : <img src={img} alt="fileImage" />}
+                    <div className="text-justify"> {note.body} </div>
+                    <div id="voice">
+                        {note.isVoiceNote ?
+                            <audio controls src={img} />
+                            :
+                            <div id="img">
+                                {img == null ? "" : <img className="img-fluid" src={img} alt="fileImage" />}
+                            </div>}
                     </div>
+
                 </div>
             }
         </div>

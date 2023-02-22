@@ -64,7 +64,7 @@ export default function MyNote() {
     async function update(note) {
         const url = "http://localhost:8081/notes/" + id;
         return await fetch(url, {
-            method: "UPDATE",
+            method: "put",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + localStorage.getItem("token")
@@ -98,25 +98,17 @@ export default function MyNote() {
                             <textarea id="notebody" className="form-control" rows="3" placeholder="Text" onChange={alterBody} value={body} />
                         </div>
                     </div>
-{/* 
-                    <div className="row mb-3">
-                        <label htmlFor="noteimg" className="col-sm-2 col-form-label">Add Image</label>
-                        <div className="col-sm-10">
-                            <input id="noteimg" type="file" accept="image/*" className="form-control-input" onChange={"funcion de subir texto que hay que importar"} />
-                        </div>
-                    </div> */}
                     <div className="row mb-3">
                         <label className="col-10" htmlFor="public">Click checkbox to swap between public and private note</label>
                         <div className="col-2">
-                            <input id="public" type="checkbox" onClick={togglePublicStatus} checked={isPublic}/> {isPublic ? "Public note" : "Private note"}
+                            <input id="public" type="checkbox" onChange={togglePublicStatus} checked={isPublic} /> {isPublic ? "Public note" : "Private note"}
                         </div>
                     </div>
                     <div className="text-center">
                         <input type="submit" className="btn btn-primary" value="Save Note" />
                     </div>
-                </form>
-            }
-            {noteId && <UploadFile noteId={noteId} />}
+                </form>}
+            <UploadFile noteId={noteId} />
         </div>
     );
 }
