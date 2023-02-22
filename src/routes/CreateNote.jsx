@@ -1,22 +1,36 @@
 import { useState } from "react";
-import UploadFile from '../utils/FileUploadForm';
 import { useNavigate } from "react-router-dom";
 
 export default function NewNote() {
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
     const [isPublic, setIsPublic] = useState(false);
-    const [noteId, setNoteId] = useState("");
+    const [file, setFile] = useState(null);
     let navigate = useNavigate();
 
     const alterTitle = (event) => { setTitle(event.target.value) };
     const alterBody = (event) => { setBody(event.target.value) };
+    const alterFile = (event) => setFile(event.target.files[0]);
     const togglePublicStatus = () => { setIsPublic(!isPublic) };
 
     const sendCreateNote = async (event) => {
         event.preventDefault();
         const note = { title: title, body: body, isVoiceNote: false, isPublic: isPublic }
-        await post(note).then(navigate("/myNotes/"));
+        await post(note).then((id) => { if (file) uploadFile(id, file); })
+            .then(navigate("/myNotes/"));
+    }
+
+    async function uploadFile(id) {
+        const formData = new FormData();
+        formData.append("file", file);
+        const response = await fetch("http://localhost:8081/notes/" + id + "/files", {
+            method: "POST",
+            body: formData,
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        return await response.json();
     }
 
     async function post(note) {
@@ -31,7 +45,7 @@ export default function NewNote() {
             .then((response) => {
                 return response.json();
             }).then((data) => {
-                setNoteId(data.id);
+                return data.id;
             })
             .catch(() => {
                 return "Error creating note";
@@ -59,16 +73,22 @@ export default function NewNote() {
                         </div>
 
                         <div className="row mb-3">
+                            <label htmlFor="fileInput" className="col-sm-2 col-form-label">File (optional):</label>
+                            <div className="col-sm-10">
+                                <input id="fileInput" type="file" accept="image/*" onChange={alterFile} />
+                            </div>
+                        </div>
+
+                        <div className="row mb-3">
                             <label className="col-10" htmlFor="public">Click checkbox to swap between public and private note</label>
                             <div className="col-2">
                                 <input id="public" type="checkbox" onClick={togglePublicStatus} /> {isPublic ? "Public note" : "Private note"}
                             </div>
                         </div>
                         <div className="text-center">
-                            <input type="submit" className="btn btn-primary" value={noteId ? "Add image" : "Create note"} />
+                            <input type="submit" className="btn btn-primary" value="Create note" />
                         </div>
                     </form>}
-                    {noteId && <UploadFile noteId={noteId} />}
             </div>
         </div>
     );

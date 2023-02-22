@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import UploadFile from '../utils/FileUploadForm';
 
 export default function MyNote() {
     const [note, setNote] = useState([]);
@@ -11,7 +10,6 @@ export default function MyNote() {
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
     const [isPublic, setIsPublic] = useState(false);
-    const [noteId, setNoteId] = useState("");
 
     const alterTitle = (event) => { setTitle(event.target.value) };
     const alterBody = (event) => { setBody(event.target.value) };
@@ -72,7 +70,7 @@ export default function MyNote() {
             body: JSON.stringify(note),
         })
             .then((response) => {
-                setNoteId(response.id);
+                return response.id;
             })
             .catch(() => {
                 return "Error creating note";
@@ -108,7 +106,6 @@ export default function MyNote() {
                         <input type="submit" className="btn btn-primary" value="Save Note" />
                     </div>
                 </form>}
-            <UploadFile noteId={noteId} />
         </div>
     );
 }
