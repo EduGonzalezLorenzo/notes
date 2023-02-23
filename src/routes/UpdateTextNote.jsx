@@ -58,7 +58,7 @@ export default function MyNote() {
     const sendUpdateNote = async (event) => {
         event.preventDefault();
         const note = { title: title, body: body, isVoiceNote: false, isPublic: isPublic }
-        await update(note).then(() => { if (file) updateFile(); });
+        await updateNote(note).then(() => { if (file) updateFile(); });
         navigate("/myNotes");
     }
 
@@ -66,7 +66,13 @@ export default function MyNote() {
         await getFileUri()
             .then((oldFile) => deleteFile(oldFile))
             .then(() => uploadFile())
-            .catch()
+            .catch();
+    }
+
+    async function deleteCurrentFile() {
+        await getFileUri()
+            .then((oldFile) => deleteFile(oldFile)).then(() => { window.alert("File deleted") })
+            .catch();
     }
 
     async function getFileUri() {
@@ -88,10 +94,9 @@ export default function MyNote() {
     }
 
     async function deleteFile(oldFileUri) {
-        console.log(oldFileUri);
+        if (!oldFileUri) return null;
         const oldFileUriSplited = oldFileUri.split("/");
-        const fileId = oldFileUriSplited[oldFileUriSplited.length-1];
-        console.log(fileId);
+        const fileId = oldFileUriSplited[oldFileUriSplited.length - 1];
         await fetch("http://localhost:8081/notes/" + id + "/files/" + fileId, {
             method: "DELETE",
             headers: {
@@ -113,7 +118,7 @@ export default function MyNote() {
         return await response.json();
     }
 
-    async function update(note) {
+    async function updateNote(note) {
         const url = "http://localhost:8081/notes/" + id;
         return await fetch(url, {
             method: "put",
@@ -151,9 +156,16 @@ export default function MyNote() {
                         </div>
                     </div>
                     <div className="row mb-3">
-                        <label htmlFor="fileInput" className="col-sm-2 col-form-label">File (optional):</label>
+                        <label htmlFor="fileInput" className="col-sm-2 col-form-label">Add file (this will delete the current file):</label>
                         <div className="col-sm-10">
                             <input id="fileInput" type="file" accept="image/*" onChange={alterFile} />
+                        </div>
+                    </div>
+
+                    <div className="row mb-3">
+                        <label htmlFor="fileInput" className="col-sm-2 col-form-label">Click to delete current file:</label>
+                        <div className="col-sm-10">
+                            <input id="fileInput" type="button" onClick={deleteCurrentFile} value="Delete" />
                         </div>
                     </div>
                     <div className="row mb-3">

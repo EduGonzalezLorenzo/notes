@@ -21,6 +21,24 @@ export default function MyNote() {
         setIsLoading(true);
         setNote([]);
 
+        async function getFileUri() {
+            const url = "http://localhost:8081/notes/" + id + "/files";
+            return fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            })
+                .then((response) => {
+                    return response.json();
+                })
+                .then((filesArray) => {
+                    if (filesArray.length === 0) return null;
+                    return filesArray[0].uri;
+                }).catch()
+        }
+
         const loadNote = async () => {
             await getNote(id)
                 .then((noteInfo) => {
@@ -33,6 +51,11 @@ export default function MyNote() {
         };
         loadNote();
     }, [id]);
+
+    useEffect(() => {
+        setTitle(note.title);
+        setIsPublic(note.isPublic);
+    }, [note])
 
     async function getFile(uri) {
         if (uri == null) return null;
@@ -52,7 +75,7 @@ export default function MyNote() {
             })
     }
 
-    async function getFileUri(id) {
+    async function getFileUri() {
         const url = "http://localhost:8081/notes/" + id + "/files";
         return fetch(url, {
             method: "GET",
@@ -69,10 +92,6 @@ export default function MyNote() {
                 return filesArray[0].uri;
             }).catch()
     }
-    useEffect(() => {
-        setTitle(note.title);
-        setIsPublic(note.isPublic);
-    }, [note])
 
     const startRecording = () => {
         navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
@@ -119,12 +138,43 @@ export default function MyNote() {
 
     const sendUpdateNote = async (event) => {
         event.preventDefault();
-        const note = { title: title, body: "", isVoiceNote: false, isPublic: isPublic }
-        await update(note);
+        const note = { title: title, body: "", isVoiceNote: true, isPublic: isPublic }
+        await updateNote(note).then(() => { updateAudio(); });
         navigate("/myNotes");
     }
 
-    async function update(note) {
+    async function updateAudio() {
+        await getFileUri()
+            .then((oldFile) => deleteFile(oldFile))
+            .then(() => uploadFile())
+            .catch()
+    }
+
+    async function deleteFile(oldFileUri) {
+        const oldFileUriSplited = oldFileUri.split("/");
+        const fileId = oldFileUriSplited[oldFileUriSplited.length - 1];
+        await fetch("http://localhost:8081/notes/" + id + "/files/" + fileId, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+    }
+
+    async function uploadFile() {
+        const formData = new FormData();
+        formData.append("file", blob);
+        const response = await fetch("http://localhost:8081/notes/" + id + "/files", {
+            method: "POST",
+            body: formData,
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        return await response.json();
+    }
+
+    async function updateNote(note) {
         const url = "http://localhost:8081/notes/" + id;
         return await fetch(url, {
             method: "put",

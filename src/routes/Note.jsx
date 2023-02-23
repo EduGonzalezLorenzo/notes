@@ -11,6 +11,7 @@ export default function MyNote() {
     useEffect(() => {
         setIsLoading(true);
         setNote([]);
+        
         const loadNote = async () => {
             await getNote(id)
                 .then((noteInfo) => {
