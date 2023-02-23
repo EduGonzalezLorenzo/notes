@@ -75,7 +75,7 @@ export default function NewVoiceNote() {
         <div className="App container">
             <h1 className="text-center">New Voice Note</h1>
             <div className="texnote_content">
-                {localStorage.getItem("token") == null ? "You have to be loged to create a note" :
+                {localStorage.getItem("token") == null ? "You have to be logged to create a note" :
                     <form onSubmit={sendCreateNote}>
                         <div className="row mb-3">
                             <label htmlFor="title" className="col-sm-2 col-form-label">Title</label>
@@ -100,7 +100,7 @@ export default function NewVoiceNote() {
                             </div>
                         </div>
                         <div className="text-center">
-                            <input type="submit" className="btn btn-primary" value="Save Note" disabled={!blob} />
+                            <input type="submit" className="btn btn-primary" value="Create voice Note" disabled={!blob} />
                         </div>
                     </form>
                 }

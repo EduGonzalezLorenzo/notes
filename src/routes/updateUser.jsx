@@ -38,35 +38,40 @@ export default function SignUp() {
     return (
         <div className="App container">
             <h1 className="text-center">Settings</h1>
-            <h2>Change password</h2>
-            <div className="texnote_content">
-                <form onSubmit={sendSignUp}>
-                    <div className="row mb-3">
-                        <label htmlFor="password" className="col-sm-2 col-form-label">Old Ppassword</label>
-                        <div className="col-sm-10">
-                            <input type={showPassword ? "text" : "password"} name="oldPassword" className="form-control password" id="oldPassword" onChange={alterOldPassword} required />
+            {localStorage.getItem("token") == null ?
+                "You have to be logged to change your password"
+                :
+                <div className="texnote_content">
+                    <h2>Change password</h2>
+                    <form onSubmit={sendSignUp}>
+                        <div className="row mb-3">
+                            <label htmlFor="password" className="col-sm-2 col-form-label">Old Ppassword</label>
+                            <div className="col-sm-10">
+                                <input type={showPassword ? "text" : "password"} name="oldPassword" className="form-control password" id="oldPassword" onChange={alterOldPassword} required />
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="row mb-3">
-                        <label htmlFor="password" className="col-sm-2 col-form-label">New password</label>
-                        <div className="col-sm-10">
-                            <input type={showPassword ? "text" : "password"} name="password" className="form-control password" id="password" onChange={alterPassword} required />
+                        <div className="row mb-3">
+                            <label htmlFor="password" className="col-sm-2 col-form-label">New password</label>
+                            <div className="col-sm-10">
+                                <input type={showPassword ? "text" : "password"} name="password" className="form-control password" id="password" onChange={alterPassword} required />
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="row mb-3">
-                        <label htmlFor="passwordRepeat" className="col-sm-2 col-form-label">Repeat new password</label>
-                        <div className="col-sm-10">
-                            <input type={showPassword ? "text" : "password"} className="form-control password" id="passwordRepeat" name="passwordRepeat" onChange={alterPasswordRepeat} required />
-                            <input type="checkbox" onClick={togglePasswordView} />Show Password
+                        <div className="row mb-3">
+                            <label htmlFor="passwordRepeat" className="col-sm-2 col-form-label">Repeat new password</label>
+                            <div className="col-sm-10">
+                                <input type={showPassword ? "text" : "password"} className="form-control password" id="passwordRepeat" name="passwordRepeat" onChange={alterPasswordRepeat} required />
+                                <input type="checkbox" onClick={togglePasswordView} />Show Password
+                            </div>
                         </div>
-                    </div>
-                    <div className="text-center">
-                        <input id="signUp" className="btn btn-primary" type="submit" value="Change password" disabled={password !== passwordRepeat || password === ""} />
-                    </div>
-                </form>
-            </div>
+                        <div className="text-center">
+                            <input id="signUp" className="btn btn-primary" type="submit" value="Change password" disabled={password !== passwordRepeat || password === ""} />
+                        </div>
+                    </form>
+
+                </div>
+            }
         </div>
     );
 }

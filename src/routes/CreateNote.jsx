@@ -19,20 +19,7 @@ export default function NewNote() {
         await post(note).then((id) => { if (file) uploadFile(id, file); })
             .then(navigate("/myNotes/"));
     }
-
-    async function uploadFile(id) {
-        const formData = new FormData();
-        formData.append("file", file);
-        const response = await fetch("http://localhost:8081/notes/" + id + "/files", {
-            method: "POST",
-            body: formData,
-            headers: {
-                "Authorization": `Bearer ${localStorage.getItem("token")}`
-            }
-        });
-        return await response.json();
-    }
-
+    
     async function post(note) {
         return await fetch("http://localhost:8081/notes", {
             method: "POST",
@@ -50,6 +37,19 @@ export default function NewNote() {
             .catch(() => {
                 return "Error creating note";
             })
+    }
+
+    async function uploadFile(id) {
+        const formData = new FormData();
+        formData.append("file", file);
+        const response = await fetch("http://localhost:8081/notes/" + id + "/files", {
+            method: "POST",
+            body: formData,
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        return await response.json();
     }
 
     return (
@@ -86,7 +86,7 @@ export default function NewNote() {
                             </div>
                         </div>
                         <div className="text-center">
-                            <input type="submit" className="btn btn-primary" value="Create note" />
+                            <input type="submit" className="btn btn-primary" value="Create text note" />
                         </div>
                     </form>}
             </div>

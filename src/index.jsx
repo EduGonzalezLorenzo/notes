@@ -11,9 +11,10 @@ import Login from './routes/Login';
 import SignUp from './routes/SignUp';
 import CreateVoiceNote from './routes/CreateVoiceNote';
 import Note from './routes/Note';
-import Settigns from './routes/UpdateUser';
+import Settings from './routes/UpdateUser';
 import reportWebVitals from './reportWebVitals';
-import Update from './routes/UpdateNote'
+import UpdateTextNote from './routes/UpdateTextNote'
+import UpdateVoiceNote from './routes/UpdateVoiceNote'
 
 const router = createBrowserRouter([
   {
@@ -50,12 +51,16 @@ const router = createBrowserRouter([
         element: <Note />
       },
       {
-        path: "/update/:id",
-        element: <Update />
+        path: "/updateTextNote/:id",
+        element: <UpdateTextNote />
       },
       {
-        path: "/settigns",
-        element: <Settigns />
+        path: "/updateVoiceNote/:id",
+        element: <UpdateVoiceNote />
+      },
+      {
+        path: "/settings",
+        element: <Settings />
       }
     ]
   }

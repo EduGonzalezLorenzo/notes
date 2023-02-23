@@ -1,35 +1,100 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function MyNote() {
-    const [note, setNote] = useState([]);
+    const [isRecording, setIsRecording] = useState(false);
+    const mediaRecorderRef = useRef(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
-    const { id } = useParams();
+    let navigate = useNavigate();
 
+    const [note, setNote] = useState([]);
+    const { id } = useParams();
     const [title, setTitle] = useState("");
-    const [body, setBody] = useState("");
+    const [blob, setBlob] = useState(null);
     const [isPublic, setIsPublic] = useState(false);
 
     const alterTitle = (event) => { setTitle(event.target.value) };
-    const alterBody = (event) => { setBody(event.target.value) };
     const togglePublicStatus = () => { setIsPublic(!isPublic) };
 
     useEffect(() => {
         setIsLoading(true);
         setNote([]);
+
         const loadNote = async () => {
-            setNote(await getNote(id));
+            await getNote(id)
+                .then((noteInfo) => {
+                    setNote(noteInfo);
+                    return getFileUri(noteInfo.id);
+                }).then((uri) => {
+                    getFile(uri);
+                });
             setIsLoading(false);
         };
         loadNote();
     }, [id]);
 
+    async function getFile(uri) {
+        if (uri == null) return null;
+        const url = "http://localhost:8081" + uri;
+        return fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+            .then((response) => {
+                return response.blob();
+            })
+            .then((data) => {
+                setBlob(data);
+            })
+    }
+
+    async function getFileUri(id) {
+        const url = "http://localhost:8081/notes/" + id + "/files";
+        return fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((filesArray) => {
+                if (filesArray.length === 0) return null;
+                return filesArray[0].uri;
+            }).catch()
+    }
     useEffect(() => {
         setTitle(note.title);
-        setBody(note.body);
         setIsPublic(note.isPublic);
     }, [note])
+
+    const startRecording = () => {
+        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+            mediaRecorderRef.current = new MediaRecorder(stream);
+            mediaRecorderRef.current.start();
+
+            let chunks = [];
+            mediaRecorderRef.current.addEventListener("dataavailable", (event) => {
+                chunks.push(event.data);
+            });
+            mediaRecorderRef.current.addEventListener("stop", () => {
+                setBlob(new Blob(chunks, { type: "audio/wav" }));
+                chunks = [];
+            });
+            setIsRecording(true);
+        });
+    };
+
+    const stopRecording = () => {
+        mediaRecorderRef.current.stop();
+        setIsRecording(false);
+    };
 
     async function getNote(id) {
         const noteUrl = "http://localhost:8081/notes/" + id;
@@ -54,9 +119,9 @@ export default function MyNote() {
 
     const sendUpdateNote = async (event) => {
         event.preventDefault();
-        const note = { title: title, body: body, isVoiceNote: false, isPublic: isPublic }
-        console.log(note);
+        const note = { title: title, body: "", isVoiceNote: false, isPublic: isPublic }
         await update(note);
+        navigate("/myNotes");
     }
 
     async function update(note) {
@@ -79,7 +144,7 @@ export default function MyNote() {
 
     return (
         <div className="App container">
-            <h1 className="text-center">Note</h1>
+            <h1 className="text-center">Update note</h1>
             {isLoading && <p>Loading...</p>}
             {note === null ? <div>{error}</div> :
                 <form onSubmit={sendUpdateNote}>
@@ -90,12 +155,17 @@ export default function MyNote() {
                         </div>
                     </div>
 
-                    <div className="row mb-3">
-                        <label htmlFor="notebody" className="col-sm-2 col-form-label">Note Content</label>
-                        <div className="col-sm-10">
-                            <textarea id="notebody" className="form-control" rows="3" placeholder="Text" onChange={alterBody} value={body} />
+                    <div className="mb-3 text-center">
+                        {blob ? <audio controls src={URL.createObjectURL(blob)} /> : null}
+                    </div>
+                    <div className="main-controls text-center mb-3">
+                        <div className="text-center" id="buttons">
+                            <button type="button" onClick={isRecording ? stopRecording : startRecording}>
+                                {isRecording ? "Stop recording" : "Start recording"}
+                            </button>
                         </div>
                     </div>
+
                     <div className="row mb-3">
                         <label className="col-10" htmlFor="public">Click checkbox to swap between public and private note</label>
                         <div className="col-2">
@@ -103,7 +173,7 @@ export default function MyNote() {
                         </div>
                     </div>
                     <div className="text-center">
-                        <input type="submit" className="btn btn-primary" value="Save Note" />
+                        <input type="submit" className="btn btn-primary" value="Save changes" />
                     </div>
                 </form>}
         </div>

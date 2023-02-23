@@ -39,7 +39,7 @@ export default function Root() {
                             <Link to="/myNotes" className="nav-link">My notes</Link>
                         </li>
                         <li className="nav-item nav-hover" hidden={!isLogged}>
-                            <Link to="/settigns" className="nav-link">Settings</Link>
+                            <Link to="/settings" className="nav-link">Settings</Link>
                         </li>
                         <li className="nav-item nav-hover" hidden={!isLogged}>
                             <Link to="/" onClick={Logout} className="nav-link">Logout</Link>
