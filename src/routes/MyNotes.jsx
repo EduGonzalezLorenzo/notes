@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// TODO Añadir inputs text y select y con un useEfect como el de hackernews forzar al refresco al buscar por palabras (de titulo o nota), filtrar por tipo y ordenar por titulo o fechas
 export default function MyNote() {
     const [notes, setNotes] = useState([]);
     const [noteDeleted, setNoteDeleted] = useState(false);
@@ -151,9 +150,11 @@ export default function MyNote() {
                 <div className="col-1">{isVoiceNote ? "Voice" : "Text"}</div>
                 <div className="col-2">{FormatDate(createdAt)}</div>
                 <div className="col-2">{FormatDate(modifiedAt)}</div>
-                <div className="col-1"><button onClick={() => navigate("/note/" + id)}>Open</button></div>
-                <div className="col-1"><button onClick={() => isVoiceNote ? navigate("/updateVoiceNote/" + id) : navigate("/updateTextNote/" + id)}>Update</button></div>
-                <div className="col-1"><button onClick={() => deleteNote(id)}>Delete</button></div>
+                <div className="col-3 row text-center">
+                    <div className="col-12 col-xl-4"><button onClick={() => navigate("/note/" + id)}>Open</button></div>
+                    <div className="col-12 col-xl-4"><button onClick={() => isVoiceNote ? navigate("/updateVoiceNote/" + id) : navigate("/updateTextNote/" + id)}>Update</button></div>
+                    <div className="col-12 col-xl-4"><button onClick={() => deleteNote(id)}>Delete</button></div>
+                </div>
             </li>
         );
     };

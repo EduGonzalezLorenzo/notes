@@ -15,6 +15,9 @@ import Settings from './routes/UpdateUser';
 import reportWebVitals from './reportWebVitals';
 import UpdateTextNote from './routes/UpdateTextNote'
 import UpdateVoiceNote from './routes/UpdateVoiceNote'
+import { register } from './serviceWorkerRegistration';
+
+register();
 
 const router = createBrowserRouter([
   {

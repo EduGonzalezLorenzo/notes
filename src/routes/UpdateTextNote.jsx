@@ -156,15 +156,15 @@ export default function MyNote() {
                         </div>
                     </div>
                     <div className="row mb-3">
-                        <label htmlFor="fileInput" className="col-sm-2 col-form-label">Add file (this will delete the current file):</label>
-                        <div className="col-sm-10">
+                        <label htmlFor="fileInput" className="col-sm-6 col-form-label">Add file (this will delete the current file):</label>
+                        <div className="col-sm-6">
                             <input id="fileInput" type="file" accept="image/*" onChange={alterFile} />
                         </div>
                     </div>
 
                     <div className="row mb-3">
-                        <label htmlFor="fileInput" className="col-sm-2 col-form-label">Click to delete current file:</label>
-                        <div className="col-sm-10">
+                        <label htmlFor="fileInput" className="col-sm-8 col-form-label">Click to delete current file:</label>
+                        <div className="col-sm-4">
                             <input id="fileInput" type="button" onClick={deleteCurrentFile} value="Delete" />
                         </div>
                     </div>
